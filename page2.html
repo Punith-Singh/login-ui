@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic 3D Flip Auth</title>
+    <style>
+        
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            filter: blur(50px);
+            animation: moveOrb 20s infinite ease-in-out;
+            z-index: -1;
+        }
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -100px;
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -100px;
+            animation-duration: 20s;
+            animation-delay: -10s;
+        }
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 18s;
+        }
+
+        @keyframes moveOrb {
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -100px;
+            animation-duration: 30s;
+            animation-delay: -10s;
+        }
+        .orb-3 {
+            display: none:
+        }
+
+        @keyframes moveOrb {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(80px, -40px) scale(1.1);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translate(-40px, 80px) scale(0.9);
+                opacity: 0.4;
+            }
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            height: 650px;
+            perspective: 1500px;
+            z-index: 10;
+        }
+
+        .auth-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        .auth-container.is-flipped .auth-card {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem; /* 24px */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2.5rem;
+            color: white;
+        }
+
+        .card-face-back {
+            transform: rotateY(180deg);
+        }
+    
+        .auth-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .social-btn {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s;
+        }
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .social-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor;
+        }
+
+        .separator-text {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .forgot-link {
+            display: block;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin: 1.25rem 0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .forgot-link:hover {
+            color: white;
+        }
+        .auth-button {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #3b0764;
+            font-size: 1.125rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        .auth-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+            color: #371a6c;
+        }
+        
+        .toggle-text {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .toggle-link {
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+    
+        .auth-title, .social-buttons, .separator-text, .form-input-group, .forgot-link, .auth-button, .toggle-text {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease-out, transform 0.4s ease-out;
+        }
+
+        .card-face .auth-title        { transition-delay: 0.5s; }
+        .card-face .social-buttons    { transition-delay: 0.6s; }
+        .card-face .separator-text    { transition-delay: 0.7s; }
+        .card-face .form-input-group  { transition-delay: 0.8s; }
+        .card-face .forgot-link       { transition-delay: 0.9s; }
+        .card-face .auth-button        { transition-delay: 0.9s; }
+        .card-face .toggle-text       { transition-delay: 1.0s; }
+
+        .auth-container:not(.is-flipped) .card-face-front .auth-title,
+        .auth-container:not(.is-flipped) .card-face-front .social-buttons,
+        .auth-container:not(.is-flipped) .card-face-front .separator-text,
+        .auth-container:not(.is-flipped) .card-face-front .form-input-group,
+        .auth-container:not(.is-flipped) .card-face-front .forgot-link,
+        .auth-container:not(.is-flipped) .card-face-front .auth-button,
+        .auth-container:not(.is-flipped) .card-face-front .toggle-text,
+        .auth-container.is-flipped .card-face-back .auth-title,
+        .auth-container.is-flipped .card-face-back .social-buttons,
+        .auth-container.is-flipped .card-face-back .separator-text,
+        .auth-container.is-flipped .card-face-back .form-input-group,
+        .auth-container.is-flipped .card-face-back .auth-button,
+        .auth-container.is-flipped .card-face-back .toggle-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #forgot-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        #forgot-modal.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        #forgot-modal-content {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            transition: all 0.3s ease-out;
+        }
+        
+        #forgot-modal.is-visible #forgot-modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .modal-description {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title, .modal-description, #forgot-modal .form-input-group, #forgot-modal .auth-button, #forgot-modal .forgot-link {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        
+        #forgot-modal.is-visible .modal-title {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.2s;
+        }
+        #forgot-modal.is-visible .modal-description {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.3s;
+        }
+        #forgot-modal.is-visible .form-input-group {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.4s;
+        }
+        #forgot-modal.is-visible .auth-button {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.5s;
+        }
+        #forgot-modal.is-visible .forgot-link {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.6s;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="auth-container">
+    
+        <div class="auth-card">
+        
+            <div class="card-face card-face-front">
+                <form action="#">
+                    <h1 class="auth-title">Login</h1>
+                    <div class="social-buttons">
+
+                        <a href="#" class="social-btn" aria-label="Login with Google">
+                            <svg viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.8 244 12.8c70.3 0 131.5 32.7 171.7 85.5l-63.8 61.8C324.6 125.6 287.4 102.8 244 102.8c-93.8 0-170.6 76.6-170.6 170.9s76.8 170.9 170.6 170.9c105.4 0 152.3-80.7 156.6-121.4H244v-85.3h236.1c2.3 12.7 3.9 26.4 3.9 40.8z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" aria-label="Login with Facebook">
+                            <svg viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.8 89.4 226.3 209.2 245V327.7h-63V256h63v-54.6c0-62.2 37-96.5 93.7-96.5 27.1 0 55.5 4.8 55.5 4.8v61h-31.3c-30.8 0-40.4 19.1-40.4 38.7V256h68.8l-11 71.7h-57.8V501C414.6 482.3 504 379.8 504 256z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" aria-label="Login with Apple">
+                            <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                        </a>
+                    </div>
+                    <p class="separator-text">or use your account</p>
+                    <div class="form-input-group">
+                        <input type="email" placeholder="Email" class="form-input" />
+                        <input type="password" placeholder="Password" class="form-input" />
+                    </div>
+                    <a href="#" id="show-forgot" class="forgot-link">Forgot your password?</a>
+                    <button type="submit" class="auth-button">Log In</button>
+                    <p class="toggle-text">
+                        Don't have an account? 
+                        <a href="#" id="show-signup" class="toggle-link">Sign Up</a>
+                    </p>
+                </form>
+            </div>
+            
+            <div class="card-face card-face-back">
+                <form action="#">
+                    <h1 class="auth-title">Create Account</h1>
+                    <div class="social-buttons">
+                        <a href="#" class="social-btn" aria-label="Sign up with Google">
+                            <svg viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.8 244 12.8c70.3 0 131.5 32.7 171.7 85.5l-63.8 61.8C324.6 125.6 287.4 102.8 244 102.8c-93.8 0-170.6 76.6-170.6 170.9s76.8 170.9 170.6 170.9c105.4 0 152.3-80.7 156.6-121.4H244v-85.3h236.1c2.3 12.7 3.9 26.4 3.9 40.8z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" aria-label="Sign up with Facebook">
+                            <svg viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.8 89.4 226.3 209.2 245V327.7h-63V256h63v-54.6c0-62.2 37-96.5 93.7-96.5 27.1 0 55.5 4.8 55.5 4.8v61h-31.3c-30.8 0-40.4 19.1-40.4 38.7V256h68.8l-11 71.7h-57.8V501C414.6 482.3 504 379.8 504 256z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" aria-label="Sign up with Apple">
+                            <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                        </a>
+                    </div>
+                    <p class="separator-text">or use your email for registration</p>
+                    <div class="form-input-group">
+                        <input type="text" placeholder="Name" class="form-input" />
+                        <input type="email" placeholder="Email" class="form-input" />
+                        <input type="password" placeholder="Password" class="form-input" />
+                    </div>
+                    <button type="submit" class="auth-button" style="margin-top: 1.5rem;">Sign Up</button>
+                    <p class="toggle-text">
+                        Already have an account? 
+                        <a href="#" id="show-login" class="toggle-link">Log In</a>
+                    </p>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="forgot-modal">
+        <div id="forgot-modal-content">
+            <h1 class="modal-title">Reset Password</h1>
+            <p class="modal-description">Enter your email and we'll send you a link to reset your password.</p>
+            <form action="#">
+                <div class="form-input-group">
+                    <input type="email" placeholder="Email" class="form-input" />
+                </div>
+                <button type="submit" class="auth-button" style="margin-top: 1.5rem;">Send Reset Link</button>
+                <a href="#" id="close-forgot" class="forgot-link" style="margin-top: 1.5rem;">Back to Log In</a>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const authContainer = document.querySelector('.auth-container');
+            const showSignupBtn = document.getElementById('show-signup');
+            const showLoginBtn = document.getElementById('show-login');
+            
+            const forgotModal = document.getElementById('forgot-modal');
+            const showForgotBtn = document.getElementById('show-forgot');
+            const closeForgotBtn = document.getElementById('close-forgot');
+            
+            showSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                authContainer.classList.add('is-flipped');
+            });
+
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                authContainer.classList.remove('is-flipped');
+            });
+            
+            showForgotBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                forgotModal.classList.add('is-visible');
+            });
+
+            closeForgotBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                forgotModal.classList.remove('is-visible');
+            });
+            
+            forgotModal.addEventListener('click', (e) => {
+                if (e.target === forgotModal) {
+                    forgotModal.classList.remove('is-visible');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
