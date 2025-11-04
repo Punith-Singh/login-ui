@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Slide Auth Super Enhanced</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-color: #f3f4f6;
+            overflow: hidden;
+            position: relative;  
+        }
+        
+        .aurora-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            filter: blur(100px);
+        }
+        
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 25s infinite alternate;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: #7c3aed;
+            top: -10%;
+            left: -10%;
+            animation-duration: 25s;
+            animation-delay: 0s;
+        }
+        
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: #ec4899;
+            top: 20%;
+            left: 50%;
+            animation-duration: 22s;
+            animation-delay: -5s;
+            animation-direction: alternate-reverse;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: #10b981;
+            bottom: -10%;
+            right: -5%;
+            animation-duration: 28s;
+            animation-delay: -10s;
+        }
+        
+        .blob-4 {
+            width: 350px;
+            height: 350px;
+            background: #3b82f6;
+            bottom: 10%;
+            left: 10%;
+            animation-duration: 20s;
+            animation-delay: -15s;
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(100px, 50px) rotate(60deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            z-index: 10;
+            position: relative;
+            animation: floatIn 0.8s ease-out;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card {
+            width: 100%;
+            min-height: 680px;
+            position: relative;
+            
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            
+            padding: 2.5rem 0;
+            color: #1f2937;
+            overflow: hidden;
+        }
+        
+        .form-slider {
+            display: flex;
+            width: 200%;
+            transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        .form-slider.is-signup {
+            transform: translateX(-50%);
+        }
+
+        .form-panel {
+            width: 50%;
+            padding: 0 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .auth-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .social-btn {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            text-decoration: none;
+            color: #4b5563;
+            transition: all 0.3s ease;
+        }
+        .social-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #1f2937;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .social-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor;
+        }
+
+        .separator-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-wrapper svg.input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            color: #9ca3af;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+        .form-input:focus + svg.input-icon {
+            color: #4f46e5;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            padding-left: 3rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #111;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input[type="password"],
+        .form-input[type="text"].password-field {
+             padding-right: 3.5rem;
+        }
+        
+        .form-input::placeholder {
+            color: #6b7280;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2), 0 0 0 1px rgba(79, 70, 229, 0.5); 
+            transform: translateY(-1px);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+        .password-toggle:hover {
+            color: #4f46e5;
+        }
+        .password-toggle svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        .password-toggle .icon-eye-off {
+            display: none;
+        }
+        .password-toggle.is-toggled .icon-eye {
+            display: none;
+        }
+        .password-toggle.is-toggled .icon-eye-off {
+            display: block;
+        }
+
+
+        .forgot-link {
+            display: block;
+            font-size: 0.875rem;
+            color: #4f46e5;
+            text-align: center;
+            margin: 1.25rem 0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .forgot-link:hover {
+            color: #4338ca;
+            text-decoration: underline;
+        }
+        
+        .auth-button {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed); 
+            background-size: 200% auto;
+            color: #ffffff;
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+        .auth-button:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .auth-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(79, 70, 229, 0.2);
+            background-position: left center;
+        }
+        
+        .toggle-text {
+            text-align: center;
+            margin-top: 2rem;
+            color: #4b5563;
+        }
+        .toggle-link {
+            font-weight: 600;
+            color: #4f46e5;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+        
+        #forgot-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        #forgot-modal.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        #forgot-modal-content {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            color: #1f2937;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        #forgot-modal.is-visible #forgot-modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: #4f46e5;
+            margin-bottom: 1rem;
+        }
+
+        .modal-description {
+            text-align: center;
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="aurora-container">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+        <div class="aurora-blob blob-4"></div>
+    </div>
+    
+    <div class="auth-container">
+        <div class="auth-card">
+            
+            <div class="form-slider" id="form-slider">
+
+                <div class="form-panel">
+                    <form action="#" id="login-form">
+                        <h1 class="auth-title">Login</h1>
+                        <div class="social-buttons">
+                            <a href="#" class="social-btn" aria-label="Login with Google">
+                                <svg viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.8 244 12.8c70.3 0 131.5 32.7 171.7 85.5l-63.8 61.8C324.6 125.6 287.4 102.8 244 102.8c-93.8 0-170.6 76.6-170.6 170.9s76.8 170.9 170.6 170.9c105.4 0 152.3-80.7 156.6-121.4H244v-85.3h236.1c2.3 12.7 3.9 26.4 3.9 40.8z"/></svg>
+                            </a>
+                            <a href="#" class="social-btn" aria-label="Login with Apple">
+                                <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                            </a>
+                        </div>
+                        <p class="separator-text">or use your account</p>
+                        <div class="form-input-group">
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                                <input type="email" placeholder="Email" class="form-input" />
+                            </div>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                                <input type="password" placeholder="Password" class="form-input password-field" id="login-pass" />
+                                <button type="button" class="password-toggle" data-target="login-pass" aria-label="Toggle password visibility">
+                                    <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <a href="#" id="show-forgot" class="forgot-link">Forgot your password?</a>
+                        <button type="submit" class="auth-button">Log In</button>
+                        <p class="toggle-text">
+                            Don't have an account? 
+                            <a href="#" id="show-signup" class="toggle-link">Sign Up</a>
+                        </p>
+                    </form>
+                </div>
+
+                <div class="form-panel">
+                    <form action="#" id="signup-form">
+                        <h1 class="auth-title">Create Account</h1>
+                        <div class="social-buttons">
+                            <a href="#" class="social-btn" aria-label="Sign up with Google">
+                                <svg viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.8 244 12.8c70.3 0 131.5 32.7 171.7 85.5l-63.8 61.8C324.6 125.6 287.4 102.8 244 102.8c-93.8 0-170.6 76.6-170.6 170.9s76.8 170.9 170.6 170.9c105.4 0 152.3-80.7 156.6-121.4H244v-85.3h236.1c2.3 12.7 3.9 26.4 3.9 40.8z"/></svg>
+                            </a>
+                            <a href="#" class="social-btn" aria-label="Sign up with Apple">
+                                <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                            </a>
+                        </div>
+                        <p class="separator-text">or use your email for registration</p>
+                        <div class="form-input-group">
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                                <input type="text" placeholder="Name" class="form-input" />
+                            </div>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                <input type="text" placeholder="Username" class="form-input" />
+                            </div>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                                <input type="email" placeholder="Email" class="form-input" />
+                            </div>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                                <input type="password" placeholder="Password" class="form-input password-field" id="signup-pass" />
+                                <button type="button" class="password-toggle" data-target="signup-pass" aria-label="Toggle password visibility">
+                                    <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                                </button>
+                            </div>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                                <input type="password" placeholder="Confirm Password" class="form-input password-field" id="signup-pass-confirm" />
+                                <button type="button" class="password-toggle" data-target="signup-pass-confirm" aria-label="Toggle password visibility">
+                                    <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="auth-button" style="margin-top: 1.5rem;">Sign Up</button>
+                        <p class="toggle-text">
+                            Already have an account? 
+                            <a href="#" id="show-login" class="toggle-link">Log In</a>
+                        </p>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <div id="forgot-modal">
+        <div id="forgot-modal-content">
+            <h1 class="modal-title">Reset Password</h1>
+            <p class="modal-description">Enter your email and we'll send you a link to reset your password.</p>
+            <form action="#">
+                <div class="form-input-group">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                        <input type="email" placeholder="Email" class="form-input" />
+                    </div>
+                </div>
+                <button type="submit" class="auth-button" style="margin-top: 1.5rem;">Send Reset Link</button>
+                <a href="#" id="close-forgot" class="forgot-link" style="margin-top: 1.5rem;">Back to Log In</a>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const formSlider = document.getElementById('form-slider');
+            const showSignupBtn = document.getElementById('show-signup');
+            const showLoginBtn = document.getElementById('show-login');
+            
+            showSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                formSlider.classList.add('is-signup');
+            });
+
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                formSlider.classList.remove('is-signup');
+            });
+
+            const passwordToggles = document.querySelectorAll('.password-toggle');
+            
+            passwordToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const inputId = toggle.dataset.target;
+                    const input = document.getElementById(inputId);
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        input.classList.add('password-field');
+                        toggle.classList.add('is-toggled');
+                    } else {
+                        input.type = 'password';
+                        input.classList.remove('password-field');
+                        toggle.classList.remove('is-toggled');
+                    }
+                });
+            });
+
+            const forgotModal = document.getElementById('forgot-modal');
+            const showForgotBtn = document.getElementById('show-forgot');
+            const closeForgotBtn = document.getElementById('close-forgot');
+            
+            showForgotBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                forgotModal.classList.add('is-visible');
+            });
+
+            closeForgotBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                forgotModal.classList.remove('is-visible');
+            });
+            
+            forgotModal.addEventListener('click', (e) => {
+                if (e.target === forgotModal) {
+                    forgotModal.classList.remove('is-visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
