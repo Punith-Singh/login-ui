@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Glassmorphism Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f0c29;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-highlight: rgba(255, 255, 255, 0.05);
+            --text-white: #ffffff;
+            --text-gray: #b3b3b3;
+            --primary-gradient: linear-gradient(135deg, #00c6ff, #0072ff);
+            --secondary-gradient: linear-gradient(135deg, #f093fb, #f5576c);
+            --error-color: #ff4b4b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-color);
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* --- Ambient Background --- */
+        .background {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            animation: float 25s infinite ease-in-out;
+            will-change: transform;
+        }
+
+        .orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, #43e97b, #38f9d7);
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            bottom: -20%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, #fa709a, #fee140);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* --- 3D Card Structure --- */
+        .card-wrapper {
+            width: 420px;
+            /* Reduced height to remove empty space at bottom */
+            height: 620px; 
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            
+            /* ADDED: This centers the content vertically to fix the bottom gap */
+            justify-content: center; 
+            
+            /* Enhanced Glassmorphism */
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 25px 45px rgba(0,0,0,0.25), 
+                inset 0 0 15px var(--glass-highlight);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* --- Typography & Elements --- */
+        h2 {
+            color: var(--text-white);
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        /* --- FIXED Floating Label Inputs --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px; 
+            margin-top: 20px;    /* Space for label to float up */
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 20px 14px 45px; /* Left padding for icon */
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-white);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        /* The Floating Label */
+        .input-group label {
+            position: absolute;
+            left: 45px; /* Aligned with text start */
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            font-size: 15px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            background: transparent; 
+        }
+
+        /* Input Icon */
+        .input-group i.icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        /* Focus & Valid States for Floating Labels */
+        .input-group input:focus,
+        .input-group input:not(:placeholder-shown) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 198, 255, 0.15);
+        }
+
+        .input-group input:focus + i.icon,
+        .input-group input:not(:placeholder-shown) + i.icon {
+            color: #00c6ff;
+        }
+
+        /* FIX: Push label WAY up (-24px) to completely clear the border */
+        .input-group input:focus ~ label,
+        .input-group input:not(:placeholder-shown) ~ label {
+            top: -24px; 
+            left: 0px;  
+            font-size: 12px;
+            color: #00c6ff;
+            font-weight: 500;
+            transform: translateY(0); 
+        }
+
+        /* --- Actions --- */
+        .forgot-link {
+            text-align: right;
+            margin-top: 0px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-link a {
+            color: var(--text-gray);
+            font-size: 12px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .forgot-link a:hover {
+            color: var(--text-white);
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Button shine effect */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 198, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary-gradient);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.2);
+            margin-top: 15px;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+            box-shadow: none;
+        }
+
+        /* --- Footer & Socials --- */
+        .switch-text {
+            margin-top: 20px;
+            color: var(--text-gray);
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .switch-text button {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 5px;
+            font-family: inherit;
+            position: relative;
+        }
+        
+        .switch-text button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: -1px;
+            left: 0;
+            background: white;
+            transform: scaleX(0);
+            transition: 0.3s;
+        }
+        
+        .switch-text button:hover::after {
+            transform: scaleX(1);
+        }
+
+        .social-login {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+        }
+        
+        .social-login::before {
+            content: 'Or continue with';
+            position: absolute;
+            top: -20px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .social-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .social-icon:hover {
+            background: white;
+            transform: translateY(-3px) scale(1.1);
+            border-color: white;
+        }
+        
+        .social-icon.google:hover { color: #DB4437; }
+        .social-icon.facebook:hover { color: #4267B2; }
+        .social-icon.apple:hover { color: #000; }
+
+        /* --- Section Transitions --- */
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .card-wrapper {
+                width: 90%;
+                height: 600px;
+            }
+            .card-face {
+                padding: 30px 20px;
+            }
+            h2 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- 3D Card Wrapper -->
+    <div class="card-wrapper">
+        <div class="card" id="card">
+            
+            <!-- FRONT: Login & Forgot Password -->
+            <div class="card-face card-front">
+                
+                <!-- Login View -->
+                <div id="login-view">
+                    <h2>Welcome Back</h2>
+                    <p class="subtitle">Enter your details to sign in</p>
+                    
+                    <form onsubmit="return false;">
+                        <div class="input-group">
+                            <input type="email" id="login-email" placeholder=" " required>
+                            <i class="fas fa-envelope icon"></i>
+                            <label for="login-email">Email Address</label>
+                        </div>
+                        
+                        <div class="input-group">
+                            <input type="password" id="login-pass" placeholder=" " required>
+                            <i class="fas fa-lock icon"></i>
+                            <label for="login-pass">Password</label>
+                        </div>
+                        
+                        <div class="forgot-link">
+                            <a href="#" id="go-to-forgot">Forgot Password?</a>
+                        </div>
+                        
+                        <button class="btn">Sign In</button>
+                    </form>
+
+                    <div class="social-login">
+                        <a href="#" class="social-icon google"><i class="fab fa-google"></i></a>
+                        <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon apple"><i class="fab fa-apple"></i></a>
+                    </div>
+
+                    <div class="switch-text">
+                        Don't have an account? <button id="flip-to-signup">Sign Up</button>
+                    </div>
+                </div>
+
+                <!-- Forgot Password View -->
+                <div id="forgot-view" class="hidden">
+                    <h2>Reset Password</h2>
+                    <p class="subtitle">We'll send you a reset link</p>
+                    
+                    <form onsubmit="return false;">
+                        <div class="input-group">
+                            <input type="email" id="forgot-email" placeholder=" " required>
+                            <i class="fas fa-envelope icon"></i>
+                            <label for="forgot-email">Enter your email</label>
+                        </div>
+                        
+                        <button class="btn btn-secondary">Send Link</button>
+                        <button class="btn btn-outline" id="back-to-login">Back to Login</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- BACK: Sign Up -->
+            <div class="card-face card-back">
+                <h2>Create Account</h2>
+                <p class="subtitle">Join us and start your journey</p>
+                
+                <form onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="signup-name" placeholder=" " required>
+                        <i class="fas fa-user icon"></i>
+                        <label for="signup-name">Full Name</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" id="signup-email" placeholder=" " required>
+                        <i class="fas fa-envelope icon"></i>
+                        <label for="signup-email">Email Address</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="signup-pass" placeholder=" " required>
+                        <i class="fas fa-lock icon"></i>
+                        <label for="signup-pass">Password</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="signup-confirm" placeholder=" " required>
+                        <i class="fas fa-shield-alt icon"></i>
+                        <label for="signup-confirm">Confirm Password</label>
+                    </div>
+                    
+                    <button class="btn btn-secondary">Sign Up</button>
+                </form>
+
+                <div class="switch-text">
+                    Already have an account? <button id="flip-to-login">Sign In</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const card = document.getElementById('card');
+        const loginView = document.getElementById('login-view');
+        const forgotView = document.getElementById('forgot-view');
+        
+        // Buttons
+        const flipToSignupBtn = document.getElementById('flip-to-signup');
+        const flipToLoginBtn = document.getElementById('flip-to-login');
+        const goToForgotBtn = document.getElementById('go-to-forgot');
+        const backToLoginBtn = document.getElementById('back-to-login');
+        const cardWrapper = document.querySelector('.card-wrapper');
+
+        // 3D Flip Logic
+        flipToSignupBtn.addEventListener('click', () => {
+            card.classList.add('flipped');
+        });
+
+        flipToLoginBtn.addEventListener('click', () => {
+            card.classList.remove('flipped');
+            // Reset view to Login if coming back from signup
+            setTimeout(() => {
+                showLoginView();
+            }, 300);
+        });
+
+        // Forgot Password Logic (Crossfade within the Front Face)
+        goToForgotBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginView.style.display = 'none';
+            forgotView.classList.remove('hidden');
+            forgotView.classList.add('fade-in');
+        });
+
+        backToLoginBtn.addEventListener('click', () => {
+            showLoginView();
+        });
+
+        function showLoginView() {
+            forgotView.classList.add('hidden');
+            forgotView.classList.remove('fade-in');
+            loginView.style.display = 'block';
+            loginView.classList.add('fade-in');
+        }
+
+        // 3D Tilt Effect
+        cardWrapper.addEventListener('mousemove', (e) => {
+            const rect = cardWrapper.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Calculate rotation based on cursor position relative to center
+            const xRotation = -((y - rect.height/2) / 20); // Rotate X axis based on Y position
+            const yRotation = (x - rect.width/2) / 20;     // Rotate Y axis based on X position
+            
+            const isFlipped = card.classList.contains('flipped');
+            
+            // Apply transform (maintain 180deg if flipped)
+            let rotation = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+            if(isFlipped) {
+                rotation = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation + 180}deg)`;
+            }
+            
+            card.style.transform = rotation;
+        });
+
+        // Reset on mouse leave
+        cardWrapper.addEventListener('mouseleave', () => {
+            const isFlipped = card.classList.contains('flipped');
+            card.style.transform = isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+        });
+    </script>
+</body>
+</html>
